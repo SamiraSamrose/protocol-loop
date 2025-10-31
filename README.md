@@ -17,6 +17,9 @@ PROTOCOL:LOOP is a recursive AI consciousness simulator that gamifies AI alignme
 - **LLM-Powered Narratives**: GPT-4/Claude-generated moral dilemmas
 - **Behavioral Adaptation**: World reshapes based on your decisions
 
+- Code-https://github.com/SamiraSamrose/protocol-loop
+- Video Link- https://youtu.be/oMXvenPbinw
+
 ## Quick Start
 ```bash
 # Clone the repository

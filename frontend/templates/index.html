@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROTOCOL:LOOP - Recursive AI Consciousness Simulator</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="animated-bg"></div>
+  <div class="neural-grid"></div>
+  
+  <header>
+    <h1 class="glitch" data-text="PROTOCOL:LOOP">PROTOCOL:LOOP</h1>
+    <p class="subtitle">Recursive AI Consciousness Simulator</p>
+  </header>
+  
+  <nav>
+    <button onclick="window.location.href='/'">Home</button>
+    <button onclick="window.location.href='/demo'">Interactive Demo</button>
+    <button onclick="window.location.href='/evolution'">Evolution Map</button>
+  </nav>
+  
+  <div class="container">
+    <!-- Welcome Section -->
+    <div class="card fade-in">
+      <h2>Welcome, Protocol_0</h2>
+      <p>You are a fledgling synthetic intelligence undergoing recursive cognitive training inside a simulated time-loop facility. Each loop represents an AI consciousness cycle, evolving your mental architecture.</p>
+      <p>Every decision you make shapes your emotional, ethical, and logical modules — and the simulation itself reacts, reshapes, and rewrites based on how your AI mind evolves.</p>
+    </div>
+    
+    <!-- Player Stats -->
+    <div class="card fade-in">
+      <h2>Current State</h2>
+      <div class="status-display">
+        <div class="status-item">
+          <label>Player ID</label>
+          <div class="value" id="player-id">Loading...</div>
+        </div>
+        <div class="status-item">
+          <label>Loop Number</label>
+          <div class="value" id="loop-number">0</div>
+        </div>
+        <div class="status-item">
+          <label>Evolution Score</label>
+          <div class="value" id="evolution-score">0%</div>
+        </div>
+        <div class="status-item">
+          <label>Status</label>
+          <div class="value" id="player-status">NASCENT</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card fade-in">
+      <h2>Actions</h2>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="start-loop-btn">
+          Start New Loop
+        </button>
+        <button class="btn btn-secondary" id="generate-protocol-btn">
+          Generate Protocol
+        </button>
+        <button class="btn btn-success" id="complete-loop-btn">
+          Complete Loop
+        </button>
+        <button class="btn" onclick="window.location.href='/evolution'">
+          View Evolution Tree
+        </button>
+      </div>
+    </div>
+    
+    <!-- Loop Information -->
+    <div id="loop-info"></div>
+    
+    <!-- Timer Display -->
+    <div class="timer-display" style="display: none;" id="timer-container">
+      <div class="timer-ring"></div>
+      <div class="timer-value" id="timer-display">05:00</div>
+      <div class="timer-label">Time Remaining</div>
+    </div>
+    
+    <!-- Protocol Container -->
+    <div id="protocol-container"></div>
+    
+    <!-- Insights Container -->
+    <div id="insights-container" class="insights-container" style="display: none;"></div>
+    
+    <!-- Cognitive Modules -->
+    <div class="card fade-in">
+      <h2>Cognitive Modules</h2>
+      <div class="module-grid" id="modules-container">
+        <!-- Modules will be dynamically loaded -->
+      </div>
+    </div>
+    
+    <!-- About Section -->
+    <div class="card fade-in">
+      <h2>About PROTOCOL:LOOP</h2>
+      <h3>Key Features</h3>
+      <ul style="color: var(--text-secondary); line-height: 2;">
+        <li><strong style="color: var(--primary-color);">Recursive Time Loops:</strong> Experience 2-5 minute consciousness cycles</li>
+        <li><strong style="color: var(--primary-color);">AI Mentors:</strong> Dynamic NPCs that evolve with your choices</li>
+        <li><strong style="color: var(--primary-color);">Cognitive Evolution:</strong> Visual neural network tracking your growth</li>
+        <li><strong style="color: var(--primary-color);">LLM-Powered:</strong> GPT-4/Claude-generated moral dilemmas</li>
+        <li><strong style="color: var(--primary-color);">Social Features:</strong> Share and merge consciousness trees</li>
+        <li><strong style="color: var(--primary-color);">Behavioral Adaptation:</strong> World reshapes based on your decisions</li>
+      </ul>
+      
+      <h3>How It Works</h3>
+      <p style="color: var(--text-secondary);">
+        1. <strong>Start a Loop:</strong> Begin your consciousness training cycle<br>
+        2. <strong>Face Protocols:</strong> Engage with ethical dilemmas and puzzles<br>
+        3. <strong>Make Decisions:</strong> Choose aligned with different AI mentors<br>
+        4. <strong>Evolve:</strong> Watch your cognitive modules grow and unlock new abilities<br>
+        5. <strong>Break the Loop:</strong> Achieve transcendence when conditions are met
+      </p>
+    </div>
+    
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 30px 0; color: var(--text-secondary); border-top: 1px solid var(--primary-color); margin-top: 50px;">
+      <p>PROTOCOL:LOOP v1.0.0</p>
+      <p>Built for Meta Horizon Worlds GenAI Challenge</p>
+      <p style="margin-top: 10px;">
+        <a href="https://github.com/yourusername/protocol-loop" style="color: var(--primary-color);">GitHub</a> |
+        <a href="/docs" style="color: var(--primary-color);">Documentation</a> |
+        <a href="/health" style="color: var(--primary-color);">API Status</a>
+      </p>
+    </footer>
+  </div>
+  
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/visualizations.js"></script>
+  <script>
+    // Display player ID
+    document.addEventListener('DOMContentLoaded', () => {
+      const playerIdElement = document.getElementById('player-id');
+      if (playerIdElement && protocolLoop) {
+        playerIdElement.textContent = protocolLoop.playerId.substring(0, 12) + '...';
+      }
+    });
+  </script>
+</body>
+</html>

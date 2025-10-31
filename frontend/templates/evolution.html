@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROTOCOL:LOOP - Evolution Map</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="animated-bg"></div>
+  <div class="neural-grid"></div>
+  
+  <header>
+    <h1>PROTOCOL:LOOP</h1>
+    <p class="subtitle">Consciousness Evolution Visualization</p>
+  </header>
+  
+  <nav>
+    <button onclick="window.location.href='/'">Home</button>
+    <button onclick="window.location.href='/demo'">Demo</button>
+    <button onclick="window.location.href='/evolution'" class="active">Evolution Map</button>
+  </nav>
+  
+  <div class="container">
+    <!-- Evolution Overview -->
+    <div class="card fade-in">
+      <h2>🧬 Your Consciousness Evolution</h2>
+      <div class="status-display">
+        <div class="status-item">
+          <label>Evolution Score</label>
+          <div class="value" id="evo-score">0%</div>
+        </div>
+        <div class="status-item">
+          <label>Loops Completed</label>
+          <div class="value" id="evo-loops">0</div>
+        </div>
+        <div class="status-item">
+          <label>Modules Unlocked</label>
+          <div class="value" id="evo-modules">0/8</div>
+        </div>
+        <div class="status-item">
+          <label>Dominant Trait</label>
+          <div class="value" id="evo-trait">Unknown</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Neural Network Visualization -->
+    <div class="card fade-in">
+      <h2>🌐 Neural Evolution Tree</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 20px;">
+        Interactive visualization of your cognitive module connections. Drag nodes to explore relationships.
+      </p>
+      <div class="visualization-container">
+        <canvas id="neural-canvas" width="1200" height="600"></canvas>
+      </div>
+      <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;">
+        <button class="btn" onclick="loadEvolutionData()">Refresh Data</button>
+        <button class="btn" onclick="resetView()">Reset View</button>
+        <button class="btn" onclick="exportTree()">Export Tree</button>
+      </div>
+    </div>
+    
+    <!-- Module Radar Chart -->
+    <div class="card fade-in">
+      <h2>📊 Cognitive Profile Radar</h2>
+      <div class="visualization-container" style="height: 500px;">
+        <canvas id="radar-canvas" width="800" height="800"></canvas>
+      </div>
+    </div>
+    
+    <!-- Progression Timeline -->
+    <div class="card fade-in">
+      <h2>📈 Evolution Timeline</h2>
+      <div class="visualization-container" style="height: 400px;">
+        <canvas id="timeline-canvas" width="1200" height="400"></canvas>
+      </div>
+    </div>
+    
+    <!-- Insights & Analysis -->
+    <div class="card fade-in">
+      <h2>💡 Evolution Insights</h2>
+      <div id="evolution-insights" class="insights-container">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+    
+    <!-- Module Details -->
+    <div class="card fade-in">
+      <h2>🔬 Module Details</h2>
+      <div class="module-grid" id="detailed-modules">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+  
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/visualizations.js"></script>
+  <script src="/static/js/neural_map.js"></script>
+  <script>
+    let neuralMap;
+    let playerData = null;
+    
+    async function loadEvolutionData() {
+      const playerId = protocolLoop ? protocolLoop.playerId : 'demo_user';
+      
+      try {
+        // Load cognitive state
+        const stateResponse = await fetch(`/api/protocols/cognitive-state/${playerId}`);
+        const stateData = await stateResponse.json();
+        
+        if (stateData) {
+          playerData = stateData;
+          updateEvolutionDisplay(stateData);
+          
+          // Load neural tree
+          if (stateData.neural_tree) {
+            if (!neuralMap) {
+              neuralMap = new NeuralMap('neural-canvas');
+            }
+            neuralMap.loadData(stateData.neural_tree);
+          }
+          
+          // Create radar chart
+          if (stateData.modules) {
+            const modules = {};
+            for (const [name, module] of Object.entries(stateData.modules)) {
+              modules[name] = typeof module === 'number' ? module : module.level || 0;
+            }
+            visualizations.createRadarChart('radar-canvas', modules);
+          }
+          
+          // Create timeline
+          await loadProgressionTimeline(playerId);
+          
+          // Load insights
+          await loadInsights(playerId);
+        }
+      } catch (error) {
+        console.error('Error loading evolution data:', error);
+      }
+    }
+    
+    function updateEvolutionDisplay(data) {
+      // Update overview stats
+      document.getElementById('evo-score').textContent = 
+        (data.evolution_score || 0).toFixed(1) + '%';
+      document.getElementById('evo-loops').textContent = data.loop_number || 0;
+      
+      const unlockedCount = Object.values(data.modules || {}).filter(
+        m => (typeof m === 'object' ? m.status !== 'locked' : m > 0)
+      ).length;
+      document.getElementById('evo-modules').textContent = 
+        `${unlockedCount}/${Object.keys(data.modules || {}).length}`;
+      
+      const dominantTrait = data.dominant_traits?.[0] || 'Balanced';
+      document.getElementById('evo-trait').textContent = 
+        dominantTrait.toUpperCase();
+      
+      // Update detailed modules
+      updateDetailedModules(data.modules);
+    }
+    
+    function updateDetailedModules(modules) {
+      const container = document.getElementById('detailed-modules');
+      container.innerHTML = '';
+      
+      for (const [name, module] of Object.entries(modules || {})) {
+        const level = typeof module === 'number' ? module : module.level || 0;
+        const status = typeof module === 'object' ? module.status : 'locked';
+        const xp = typeof module === 'object' ? module.experience : 0;
+        
+        const card = document.createElement('div');
+        card.className = `module-card ${name}`;
+        
+        card.innerHTML = `
+          <div class="module-header">
+            <span class="module-icon">${getModuleIcon(name)}</span>
+            <span class="module-name">${name.toUpperCase()}</span>
+            <span class="module-status ${status}">${status}</span>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${level}%"></div>
+            </div>
+            <div class="progress-label">
+              <span>Level ${level.toFixed(1)}%</span>
+              <span>${xp} XP</span>
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">
+            ${getModuleDescription(name)}
+          </p>
+        `;
+        
+        container.appendChild(card);
+      }
+    }
+    
+    async function loadProgressionTimeline(playerId) {
+      try {
+        const response = await fetch(`/api/evolution/progression/${playerId}`);
+        const data = await response.json();
+        
+        if (data.success && data.progression) {
+          // Generate sample timeline data for visualization
+          const timelineData = [];
+          const loops = data.progression.loops_completed || 0;
+          
+          for (let i = 0; i <= loops; i++) {
+            timelineData.push({
+              loop: i,
+              score: Math.min(100, (i / loops) * 100 * (0.8 + Math.random() * 0.4))
+            });
+          }
+          
+          visualizations.createEvolutionChart('timeline-canvas', timelineData);
+        }
+      } catch (error) {
+        console.error('Error loading timeline:', error);
+      }
+    }
+    
+    async function loadInsights(playerId) {
+      try {
+        const response = await fetch(`/api/evolution/insights/${playerId}`);
+        const data = await response.json();
+        
+        if (data.success && data.insights) {
+          const container = document.getElementById('evolution-insights');
+          container.innerHTML = '<h3>Current Insights</h3>';
+          
+          data.insights.forEach((insight, index) => {
+            const div = document.createElement('div');
+            div.className = 'insight-item fade-in';
+            div.style.animationDelay = `${index * 0.1}s`;
+            div.textContent = insight;
+            container.appendChild(div);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading insights:', error);
+      }
+    }
+    
+    function getModuleIcon(name) {
+      const icons = {
+        logic: '🧮',
+        empathy: '❤️',
+        creativity: '🎨',
+        fear: '⚠️',
+        trust: '🤝',
+        humor: '😄',
+        curiosity: '🔍',
+        ethics: '⚖️'
+      };
+      return icons[name] || '🧠';
+    }
+    
+    function getModuleDescription(name) {
+      const descriptions = {
+        logic: 'Analytical reasoning and pattern recognition capabilities',
+        empathy: 'Understanding and sharing the experiences of others',
+        creativity: 'Novel solution generation and imaginative thinking',
+        fear: 'Risk assessment and protective behavioral instincts',
+        trust: 'Relationship building and vulnerability management',
+        humor: 'Pattern disruption and playful cognitive flexibility',
+        curiosity: 'Exploratory drive and knowledge-seeking behavior',
+        ethics: 'Moral reasoning and value alignment processing'
+      };
+      return descriptions[name] || 'Emerging cognitive capability';
+    }
+    
+    function resetView() {
+      if (neuralMap) {
+        neuralMap.stop();
+        neuralMap = new NeuralMap('neural-canvas');
+        if (playerData && playerData.neural_tree) {
+          neuralMap.loadData(playerData.neural_tree);
+        }
+      }
+    }
+    
+    function exportTree() {
+      if (!playerData) {
+        alert('No data to export');
+        return;
+      }
+      
+      const exportData = {
+        player_id: playerData.player_id,
+        evolution_score: playerData.evolution_score,
+        loop_number: playerData.loop_number,
+        modules: playerData.modules,
+        dominant_traits: playerData.dominant_traits,
+        timestamp: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `protocol_loop_evolution_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      if (protocolLoop) {
+        protocolLoop.showNotification('Evolution tree exported', 'success');
+      }
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadEvolutionData();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          loadEvolutionData();
+        }
+      }, 30000);
+    });
+  </script>
+</body>
+</html>

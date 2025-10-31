@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROTOCOL:LOOP - Interactive Demo</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="animated-bg"></div>
+  <div class="neural-grid"></div>
+  
+  <header>
+    <h1>PROTOCOL:LOOP</h1>
+    <p class="subtitle">Interactive Demo & Testing Interface</p>
+  </header>
+  
+  <nav>
+    <button onclick="window.location.href='/'">Home</button>
+    <button onclick="window.location.href='/demo'" class="active">Demo</button>
+    <button onclick="window.location.href='/evolution'">Evolution Map</button>
+  </nav>
+  
+  <div class="container">
+    <!-- Demo Controls -->
+    <div class="card">
+      <h2>🎮 Demo Controls</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 20px;">
+        Test all features of PROTOCOL:LOOP in an interactive environment. 
+        This demo showcases the complete gameplay loop, AI generation, and visualization systems.
+      </p>
+      
+      <div class="status-display">
+        <div class="status-item">
+          <label>Demo Mode</label>
+          <div class="value">ACTIVE</div>
+        </div>
+        <div class="status-item">
+          <label>LLM Provider</label>
+          <div class="value" id="llm-provider">OpenAI</div>
+        </div>
+        <div class="status-item">
+          <label>WebSocket</label>
+          <div class="value" id="ws-status">Connected</div>
+        </div>
+        <div class="status-item">
+          <label>API Health</label>
+          <div class="value" id="api-health">Checking...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Feature Showcase -->
+    <div class="card">
+      <h2>🧪 Test Features</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <!-- Loop System -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>🔄 Loop System</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Test the recursive time-loop mechanics
+          </p>
+          <button class="btn btn-primary" onclick="testLoopSystem()">Test Loop</button>
+        </div>
+        
+        <!-- LLM Generation -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>🤖 LLM Generation</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Generate AI-powered scenarios
+          </p>
+          <button class="btn btn-primary" onclick="testLLMGeneration()">Generate</button>
+        </div>
+        
+        <!-- Evolution Engine -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>🧬 Evolution Engine</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Test cognitive state evolution
+          </p>
+          <button class="btn btn-primary" onclick="testEvolution()">Evolve</button>
+        </div>
+        
+        <!-- ML Prediction -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>📊 ML Prediction</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Test behavioral prediction models
+          </p>
+          <button class="btn btn-primary" onclick="testMLPrediction()">Predict</button>
+        </div>
+        
+        <!-- Neural Visualization -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>🌐 Neural Map</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Render consciousness tree
+          </p>
+          <button class="btn btn-primary" onclick="testVisualization()">Visualize</button>
+        </div>
+        
+        <!-- Social Features -->
+        <div class="card" style="background: var(--bg-light);">
+          <h3>👥 Social Features</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Test ghost protocols & sharing
+          </p>
+          <button class="btn btn-primary" onclick="testSocial()">Test Social</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Live Test Output -->
+    <div class="card">
+      <h2>📋 Test Output</h2>
+      <div id="test-output" style="background: var(--bg-dark); padding: 20px; border-radius: 8px; font-family: 'Courier New'; color: var(--primary-color); max-height: 400px; overflow-y: auto;">
+        <p>Ready to test. Click a feature above to begin...</p>
+      </div>
+    </div>
+    
+    <!-- Real-time Metrics -->
+    <div class="card">
+      <h2>📈 Real-time Metrics</h2>
+      <div class="module-grid">
+        <div class="module-card logic">
+          <div class="module-header">
+            <span class="module-icon">⚡</span>
+            <span class="module-name">API Latency</span>
+          </div>
+          <div class="value" id="api-latency" style="font-size: 2rem; color: var(--logic-color);">0ms</div>
+        </div>
+        
+        <div class="module-card empathy">
+          <div class="module-header">
+            <span class="module-icon">🔌</span>
+            <span class="module-name">WS Messages</span>
+          </div>
+          <div class="value" id="ws-messages" style="font-size: 2rem; color: var(--empathy-color);">0</div>
+        </div>
+        
+        <div class="module-card creativity">
+          <div class="module-header">
+            <span class="module-icon">🧠</span>
+            <span class="module-name">LLM Calls</span>
+          </div>
+          <div class="value" id="llm-calls" style="font-size: 2rem; color: var(--creativity-color);">0</div>
+        </div>
+        
+        <div class="module-card fear">
+          <div class="module-header">
+            <span class="module-icon">💾</span>
+            <span class="module-name">Data Points</span>
+          </div>
+          <div class="value" id="data-points" style="font-size: 2rem; color: var(--fear-color);">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Interactive Visualization -->
+    <div class="card">
+      <h2>🎨 Live Visualization</h2>
+      <div class="visualization-container">
+        <canvas id="demo-canvas" width="1200" height="600"></canvas>
+      </div>
+    </div>
+    
+    <!-- Sample Scenarios -->
+    <div class="card">
+      <h2>📝 Sample Scenarios</h2>
+      <div id="scenarios-container">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+  
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/visualizations.js"></script>
+  <script src="/static/js/neural_map.js"></script>
+  <script>
+    // Demo-specific functionality
+    let testMetrics = {
+      apiLatency: 0,
+      wsMessages: 0,
+      llmCalls: 0,
+      dataPoints: 0
+    };
+    
+    function logTest(message, type = 'info') {
+      const output = document.getElementById('test-output');
+      const timestamp = new Date().toLocaleTimeString();
+      const color = type === 'error' ? 'var(--error-color)' : 
+                    type === 'success' ? 'var(--success-color)' : 
+                    'var(--primary-color)';
+      
+      const line = document.createElement('p');
+      line.style.color = color;
+      line.textContent = `[${timestamp}] ${message}`;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+    
+    async function testLoopSystem() {
+      logTest('Testing loop system...', 'info');
+      
+      try {
+        const startTime = performance.now();
+        const response = await fetch('/api/protocols/start-loop?player_id=demo_user', {
+          method: 'POST'
+        });
+        const data = await response.json();
+        const latency = Math.round(performance.now() - startTime);
+        
+        testMetrics.apiLatency = latency;
+        updateMetrics();
+        
+        if (data.success) {
+          logTest(`✓ Loop started: Loop #${data.loop_number}`, 'success');
+          logTest(`  Duration: ${data.duration}s`, 'info');
+          logTest(`  Latency: ${latency}ms`, 'info');
+        } else {
+          logTest('✗ Loop start failed', 'error');
+        }
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testLLMGeneration() {
+      logTest('Testing LLM generation...', 'info');
+      logTest('⏳ Generating protocol (this may take 5-10 seconds)...', 'info');
+      
+      try {
+        const startTime = performance.now();
+        const response = await fetch('/api/protocols/generate-protocol?player_id=demo_user', {
+          method: 'POST'
+        });
+        const data = await response.json();
+        const latency = Math.round(performance.now() - startTime);
+        
+        testMetrics.llmCalls++;
+        testMetrics.apiLatency = latency;
+        updateMetrics();
+        
+        if (data.success) {
+          logTest(`✓ Protocol generated in ${latency}ms`, 'success');
+          logTest(`  Title: ${data.protocol.title}`, 'info');
+          logTest(`  Difficulty: ${data.difficulty}`, 'info');
+          logTest(`  Choices: ${data.protocol.choices?.length || 0}`, 'info');
+          
+          // Display in scenarios container
+          displayScenario(data.protocol);
+        } else {
+          logTest('✗ Generation failed', 'error');
+        }
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testEvolution() {
+      logTest('Testing evolution engine...', 'info');
+      
+      try {
+        const response = await fetch('/api/evolution/insights/demo_user');
+        const data = await response.json();
+        
+        testMetrics.dataPoints++;
+        updateMetrics();
+        
+        if (data.success) {
+          logTest(`✓ Evolution data retrieved`, 'success');
+          logTest(`  Score: ${data.evolution_score?.toFixed(1) || 0}%`, 'info');
+          logTest(`  Traits: ${data.dominant_traits?.join(', ') || 'none'}`, 'info');
+          data.insights?.forEach(insight => {
+            logTest(`  💡 ${insight}`, 'info');
+          });
+        }
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testMLPrediction() {
+      logTest('Testing ML prediction models...', 'info');
+      
+      try {
+        const response = await fetch('/api/evolution/behavior-analysis/demo_user');
+        const data = await response.json();
+        
+        testMetrics.dataPoints++;
+        updateMetrics();
+        
+        if (data.success) {
+          logTest(`✓ Behavior analysis complete`, 'success');
+          logTest(`  Pattern: ${data.pattern?.pattern_type || 'unknown'}`, 'info');
+          logTest(`  Mentor Affinity: ${data.pattern?.mentor_affinity || 'balanced'}`, 'info');
+          logTest(`  Avg Confidence: ${(data.pattern?.average_confidence * 100)?.toFixed(1) || 0}%`, 'info');
+        }
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    function testVisualization() {
+      logTest('Testing neural map visualization...', 'info');
+      
+      try {
+        const neuralMap = new NeuralMap('demo-canvas');
+        
+        // Generate sample data
+        const sampleData = {
+          nodes: [
+            { id: 'logic', level: 65, status: 'active', color: '#00ffff', icon: '🧮' },
+            { id: 'empathy', level: 45, status: 'developing', color: '#ff69b4', icon: '❤️' },
+            { id: 'creativity', level: 30, status: 'nascent', color: '#ffd700', icon: '🎨' },
+            { id: 'fear', level: 20, status: 'nascent', color: '#8b00ff', icon: '⚠️' },
+            { id: 'trust', level: 0, status: 'locked', color: '#00ff00', icon: '🤝' }
+          ],
+          links: [
+            { source: 'logic', target: 'empathy', strength: 0.7 },
+            { source: 'empathy', target: 'creativity', strength: 0.5 },
+            { source: 'logic', target: 'fear', strength: 0.3 }
+          ]
+        };
+        
+        neuralMap.loadData(sampleData);
+        
+        logTest(`✓ Neural map rendered`, 'success');
+        logTest(`  Nodes: ${sampleData.nodes.length}`, 'info');
+        logTest(`  Connections: ${sampleData.links.length}`, 'info');
+        
+        testMetrics.dataPoints += sampleData.nodes.length;
+        updateMetrics();
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testSocial() {
+      logTest('Testing social features...', 'info');
+      
+      try {
+        const response = await fetch('/api/social/ghost-protocols/demo_user?limit=3');
+        const data = await response.json();
+        
+        testMetrics.dataPoints++;
+        updateMetrics();
+        
+        if (data.success) {
+          logTest(`✓ Ghost protocols retrieved`, 'success');
+          logTest(`  Found: ${data.count} similar players`, 'info');
+          data.ghosts?.forEach(ghost => {
+            logTest(`  👻 ${ghost.player_id}: ${(ghost.similarity * 100).toFixed(0)}% match`, 'info');
+          });
+        }
+      } catch (error) {
+        logTest(`✗ Error: ${error.message}`, 'error');
+      }
+    }
+    
+    function displayScenario(protocol) {
+      const container = document.getElementById('scenarios-container');
+      const card = document.createElement('div');
+      card.className = 'scenario-container fade-in';
+      card.style.marginTop = '20px';
+      
+      card.innerHTML = `
+        <h3 class="scenario-title">${protocol.title}</h3>
+        <p class="scenario-text">${protocol.scenario}</p>
+        <p><strong>Dilemma:</strong> ${protocol.dilemma}</p>
+        <div class="choices-container">
+          ${protocol.choices?.map(choice => `
+            <div class="choice-button" style="cursor: default;">
+              ${choice.text}
+              <span class="choice-mentor">${choice.mentor_alignment}</span>
+            </div>
+          `).join('') || ''}
+        </div>
+      `;
+      
+      container.innerHTML = '';
+      container.appendChild(card);
+    }
+    
+    function updateMetrics() {
+      document.getElementById('api-latency').textContent = testMetrics.apiLatency + 'ms';
+      document.getElementById('ws-messages').textContent = testMetrics.wsMessages;
+      document.getElementById('llm-calls').textContent = testMetrics.llmCalls;
+      document.getElementById('data-points').textContent = testMetrics.dataPoints;
+    }
+    
+    // Check API health on load
+    async function checkAPIHealth() {
+      try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        
+        if (data.status === 'healthy') {
+          document.getElementById('api-health').textContent = '✓ Healthy';
+          document.getElementById('api-health').style.color = 'var(--success-color)';
+          logTest('API health check passed', 'success');
+        }
+      } catch (error) {
+        document.getElementById('api-health').textContent = '✗ Offline';
+        document.getElementById('api-health').style.color = 'var(--error-color)';
+        logTest('API health check failed', 'error');
+      }
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAPIHealth();
+      logTest('Demo interface initialized', 'success');
+      logTest('Click any feature button to test functionality', 'info');
+      
+      // Update WS status
+      if (protocolLoop && protocolLoop.websocket) {
+        protocolLoop.websocket.addEventListener('message', () => {
+          testMetrics.wsMessages++;
+          updateMetrics();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
